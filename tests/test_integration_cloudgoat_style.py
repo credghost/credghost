@@ -55,9 +55,7 @@ OVERBROAD = json.dumps(
 SCOPED = json.dumps(
     {
         "Version": "2012-10-17",
-        "Statement": [
-            {"Effect": "Allow", "Action": "s3:GetObject", "Resource": "*"}
-        ],
+        "Statement": [{"Effect": "Allow", "Action": "s3:GetObject", "Resource": "*"}],
     }
 )
 
