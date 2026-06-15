@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Callable, Optional
 
+from credghost.engine.correlator import apply_unused_access_findings
 from credghost.models.nhi import NHIIdentity, NHIType
 from credghost.providers.aws.analyzer import AccessAnalyzerCollector
 from credghost.providers.aws.client import (
@@ -81,9 +82,7 @@ class AWSProvider(BaseProvider):
         users = iam.list_users()
         _notify(progress_callback, "users", len(users))
         for user in users:
-            identities.extend(
-                self._map_user(user, iam, cred_rows, account)
-            )
+            identities.extend(self._map_user(user, iam, cred_rows, account))
 
         # Step 3 — roles.
         roles = iam.list_roles()
@@ -92,6 +91,10 @@ class AWSProvider(BaseProvider):
             identities.append(
                 self._map_role(role, iam, ct_recency, cloudtrail_available, account)
             )
+
+        # Correlate Access Analyzer unused-access findings onto identities so the
+        # scorer can corroborate over-privilege.
+        apply_unused_access_findings(identities, unused_by_resource)
 
         _notify(progress_callback, "analyzer", None)
         _notify(progress_callback, "cloudtrail", None)
@@ -267,7 +270,9 @@ def _user_last_used(user: dict, cred: dict) -> Optional[datetime]:
     return max(candidates) if candidates else None
 
 
-def _role_last_used(role: dict, svc_accessed: dict, ct_recency: dict) -> Optional[datetime]:
+def _role_last_used(
+    role: dict, svc_accessed: dict, ct_recency: dict
+) -> Optional[datetime]:
     candidates: list[datetime] = []
     role_last = role.get("RoleLastUsed", {}).get("LastUsedDate")
     if role_last:

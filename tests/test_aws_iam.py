@@ -32,8 +32,10 @@ def aws_account():
         # A user that is owned via tags.
         iam.create_user(
             UserName="owned-user",
-            Tags=[{"Key": "owner", "Value": "alice@example.com"},
-                  {"Key": "purpose", "Value": "nightly etl"}],
+            Tags=[
+                {"Key": "owner", "Value": "alice@example.com"},
+                {"Key": "purpose", "Value": "nightly etl"},
+            ],
         )
 
         # A customer role we should keep.
@@ -84,7 +86,8 @@ def test_owner_and_purpose_from_tags(aws_account):
 def test_orphaned_user_has_no_owner(aws_account):
     result = _collect()
     legacy = next(
-        i for i in result.identities
+        i
+        for i in result.identities
         if i.name == "svc-legacy-backup" and i.nhi_type == NHIType.IAM_USER
     )
     assert legacy.owner is None
@@ -98,8 +101,10 @@ def test_service_linked_roles_filtered_out(aws_account):
     result = _collect()
     for i in result.identities:
         if i.nhi_type == NHIType.IAM_ROLE:
-            assert not i.raw.get("role", {}).get("Path", "/").startswith(
-                "/aws-service-role/"
+            assert (
+                not i.raw.get("role", {})
+                .get("Path", "/")
+                .startswith("/aws-service-role/")
             )
 
 
@@ -122,7 +127,8 @@ def test_full_inventory_scores_risk(aws_account):
     assert all(i.risk_level is not None for i in result.identities)
     # The orphaned admin user should not be low/info.
     legacy = next(
-        i for i in result.identities
+        i
+        for i in result.identities
         if i.name == "svc-legacy-backup" and i.nhi_type == NHIType.IAM_USER
     )
     assert legacy.risk_level.value in ("medium", "high", "critical")

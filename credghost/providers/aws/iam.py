@@ -64,7 +64,11 @@ class IAMCollector:
                     break
                 except ClientError as exc:
                     code = error_code(exc)
-                    if code in ("ReportNotPresent", "ReportInProgress", "ReportExpired"):
+                    if code in (
+                        "ReportNotPresent",
+                        "ReportInProgress",
+                        "ReportExpired",
+                    ):
                         if time.time() > deadline:
                             self.warnings.append(
                                 "Credential report not ready in time — skipped"

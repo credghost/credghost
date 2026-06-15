@@ -30,7 +30,10 @@ def compute_blast_radius(nhi: NHIIdentity) -> str:
         if svc in perm.lower()
     }
     # Wildcard grants (`*`) are maximally dangerous.
-    if any(p == "*" or p.endswith(":*") and "iam" in p.lower() for p in nhi.granted_permissions):
+    if any(
+        p == "*" or p.endswith(":*") and "iam" in p.lower()
+        for p in nhi.granted_permissions
+    ):
         return "critical"
     if "*" in nhi.granted_permissions:
         return "critical"

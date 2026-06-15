@@ -14,10 +14,10 @@ from typing import Optional
 
 class RiskLevel(Enum):
     CRITICAL = "critical"  # Orphaned + high permissions, never expires
-    HIGH = "high"          # Stale >90 days, over-privileged
-    MEDIUM = "medium"      # Stale >30 days OR no owner
-    LOW = "low"            # Active, owned, scoped appropriately
-    INFO = "info"          # Active, used recently, looks clean
+    HIGH = "high"  # Stale >90 days, over-privileged
+    MEDIUM = "medium"  # Stale >30 days OR no owner
+    LOW = "low"  # Active, owned, scoped appropriately
+    INFO = "info"  # Active, used recently, looks clean
 
     @property
     def rank(self) -> int:
@@ -49,21 +49,21 @@ def _utcnow() -> datetime:
 @dataclass
 class NHIIdentity:
     # Identity basics
-    id: str                              # Unique internal ID (provider:account:name)
-    name: str                            # Display name (e.g. "splunk-service-account")
+    id: str  # Unique internal ID (provider:account:name)
+    name: str  # Display name (e.g. "splunk-service-account")
     nhi_type: NHIType
-    provider: str                        # "aws", "github", "okta" etc.
-    account: str                         # AWS account ID, org name etc.
+    provider: str  # "aws", "github", "okta" etc.
+    account: str  # AWS account ID, org name etc.
 
     # Lifecycle
     created_at: Optional[datetime] = None
     last_used_at: Optional[datetime] = None
-    expires_at: Optional[datetime] = None   # None = never expires
+    expires_at: Optional[datetime] = None  # None = never expires
 
     # Ownership
-    owner: Optional[str] = None             # Username/email of human owner. None = orphaned
-    created_by: Optional[str] = None        # Who created it
-    purpose: Optional[str] = None           # Description if any exists
+    owner: Optional[str] = None  # Username/email of human owner. None = orphaned
+    created_by: Optional[str] = None  # Who created it
+    purpose: Optional[str] = None  # Description if any exists
 
     # Permissions
     granted_permissions: list[str] = field(default_factory=list)
@@ -73,7 +73,7 @@ class NHIIdentity:
     # Risk
     risk_level: RiskLevel = RiskLevel.INFO
     risk_reasons: list[str] = field(default_factory=list)
-    blast_radius: str = "low"               # "low" / "medium" / "high" / "critical"
+    blast_radius: str = "low"  # "low" / "medium" / "high" / "critical"
 
     # When last-used data is genuinely unknown (e.g. CloudTrail off) rather than
     # confirmed "never used". Keeps us from over-flagging.

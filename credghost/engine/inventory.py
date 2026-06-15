@@ -8,7 +8,6 @@ import time
 import uuid
 from datetime import datetime, timezone
 
-from credghost.engine.correlator import apply_unused_access_findings
 from credghost.engine.scorer import score_all
 from credghost.models.nhi import ScanResult
 from credghost.providers.base import BaseProvider
@@ -25,15 +24,9 @@ def build_inventory(
     Set ``score=False`` for the raw inventory command (no risk scoring).
     """
     start = time.monotonic()
+    # Providers correlate their own findings (e.g. Access Analyzer) onto
+    # identities during collect(); here we just score and package the result.
     result = provider.collect(progress_callback=progress_callback)
-
-    # Fold Access Analyzer findings the provider stored on raw payloads.
-    # (Provider already attaches them; correlator is the cross-provider hook.)
-    unused = {}
-    for identity in result.identities:
-        for finding in identity.raw.get("access_analyzer_findings", []):
-            unused.setdefault(identity.id, []).append(finding)
-    apply_unused_access_findings(result.identities, {})
 
     if score:
         score_all(result.identities, stale_threshold_days)

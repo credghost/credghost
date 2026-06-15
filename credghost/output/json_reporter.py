@@ -45,7 +45,7 @@ def load_scan(path: str) -> ScanResult:
     """Reconstruct a :class:`ScanResult` from a saved JSON scan file."""
     from datetime import datetime
 
-    from credghost.models.nhi import NHIIdentity, NHIType, RiskLevel
+    from credghost.models.nhi import NHIIdentity, RiskLevel
 
     with open(path, "r", encoding="utf-8") as fh:
         data = json.load(fh)

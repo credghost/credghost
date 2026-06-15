@@ -1,5 +1,9 @@
 # 👻 CredGhost
 
+[![CI](https://github.com/credghost/credghost/actions/workflows/ci.yml/badge.svg)](https://github.com/credghost/credghost/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org)
+
 **Find every ghost key in your cloud.**
 
 CredGhost is a read-only command-line tool that connects to your cloud account and produces a complete inventory and risk report of every *non-human identity* (NHI) you have — service accounts, API keys, IAM roles, access keys, and agent credentials. Think of it like a building security audit: it walks every door, tells you which keys still work, which ones nobody remembers cutting, and which open far more rooms than they should. Nothing is changed, nothing is unlocked — you just finally get the full list.

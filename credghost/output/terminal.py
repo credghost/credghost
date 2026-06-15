@@ -39,7 +39,9 @@ def render_summary(console: Console, result: ScanResult) -> None:
     total = result.total_nhis
     console.rule("[bold]SUMMARY")
     console.print(f"Total NHIs:          {total}")
-    console.print(f"Orphaned:            {result.orphaned} ({_pct(result.orphaned, total)})")
+    console.print(
+        f"Orphaned:            {result.orphaned} ({_pct(result.orphaned, total)})"
+    )
     console.print(f"Stale (>90d):        {result.stale} ({_pct(result.stale, total)})")
     console.print(
         f"Never used:          {result.never_used} ({_pct(result.never_used, total)})"
@@ -57,13 +59,17 @@ def render_summary(console: Console, result: ScanResult) -> None:
         levels.append(RiskLevel.INFO)
     for level in levels:
         icon, style = RISK_STYLE[level]
-        parts.append(f"[{style}]{icon} {level.value.upper()}: {by_risk[level.value]}[/]")
+        parts.append(
+            f"[{style}]{icon} {level.value.upper()}: {by_risk[level.value]}[/]"
+        )
     console.print("    ".join(parts))
     console.print()
 
 
 def _findings_table(title: str, identities: list[NHIIdentity], style: str) -> Table:
-    table = Table(title=title, box=ROUNDED, border_style=style, title_style=f"bold {style}")
+    table = Table(
+        title=title, box=ROUNDED, border_style=style, title_style=f"bold {style}"
+    )
     table.add_column("Identity", style="bold", no_wrap=True, max_width=28)
     table.add_column("Type")
     table.add_column("Last Used")
@@ -82,7 +88,13 @@ def _findings_table(title: str, identities: list[NHIIdentity], style: str) -> Ta
 
 def render_findings(console: Console, result: ScanResult, levels=None) -> None:
     show = levels or (RiskLevel.CRITICAL, RiskLevel.HIGH, RiskLevel.MEDIUM)
-    for level in (RiskLevel.CRITICAL, RiskLevel.HIGH, RiskLevel.MEDIUM, RiskLevel.LOW, RiskLevel.INFO):
+    for level in (
+        RiskLevel.CRITICAL,
+        RiskLevel.HIGH,
+        RiskLevel.MEDIUM,
+        RiskLevel.LOW,
+        RiskLevel.INFO,
+    ):
         if level not in show:
             continue
         identities = result.identities_by_level(level)
@@ -103,10 +115,14 @@ def render_recommendations(console: Console, result: ScanResult) -> None:
     console.rule("[bold]RECOMMENDED ACTIONS")
     n = 1
     if by_risk["critical"]:
-        console.print(f"{n}. Immediately investigate {by_risk['critical']} CRITICAL identities")
+        console.print(
+            f"{n}. Immediately investigate {by_risk['critical']} CRITICAL identities"
+        )
         n += 1
     if by_risk["high"]:
-        console.print(f"{n}. Schedule review of {by_risk['high']} HIGH findings within 7 days")
+        console.print(
+            f"{n}. Schedule review of {by_risk['high']} HIGH findings within 7 days"
+        )
         n += 1
     if any("CloudTrail" in w for w in result.warnings):
         console.print(f"{n}. Enable CloudTrail data events for deeper coverage")

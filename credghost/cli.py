@@ -94,16 +94,45 @@ def main():
 
 
 @main.command()
-@click.option("--provider", default="aws", show_default=True, help="Cloud provider to scan.")
+@click.option(
+    "--provider", default="aws", show_default=True, help="Cloud provider to scan."
+)
 @click.option("--profile", default=None, help="Named AWS credentials profile.")
 @click.option("--region", default=None, help="AWS region (optional).")
 @click.option("--account-id", default=None, help="Expected AWS account id.")
-@click.option("--stale-after", default=None, type=int, help="Staleness threshold in days (default 90).")
-@click.option("--output", "output_fmt", type=click.Choice(["terminal", "json", "html"]), default="terminal", show_default=True)
-@click.option("--report-path", default=None, help="Output file path for html/json reports.")
-@click.option("--severity", default=None, help="Comma list to filter findings, e.g. high,critical.")
+@click.option(
+    "--stale-after",
+    default=None,
+    type=int,
+    help="Staleness threshold in days (default 90).",
+)
+@click.option(
+    "--output",
+    "output_fmt",
+    type=click.Choice(["terminal", "json", "html"]),
+    default="terminal",
+    show_default=True,
+)
+@click.option(
+    "--report-path", default=None, help="Output file path for html/json reports."
+)
+@click.option(
+    "--severity",
+    default=None,
+    help="Comma list to filter findings, e.g. high,critical.",
+)
 @click.option("--config-profile", default=None, help="Use a saved configure profile.")
-def scan(provider, profile, region, account_id, stale_after, output_fmt, report_path, severity, config_profile):
+def scan(
+    provider,
+    profile,
+    region,
+    account_id,
+    stale_after,
+    output_fmt,
+    report_path,
+    severity,
+    config_profile,
+):
     """Full scan: inventory + risk scoring + report."""
     cfg = load_config()
     if config_profile:
@@ -120,7 +149,9 @@ def scan(provider, profile, region, account_id, stale_after, output_fmt, report_
     show_progress = output_fmt == "terminal"
 
     try:
-        result = _run_scan(provider, profile, region, account_id, stale_after, True, show_progress)
+        result = _run_scan(
+            provider, profile, region, account_id, stale_after, True, show_progress
+        )
     except CredentialsMissing as exc:
         _handle_credentials_error(exc)
 
@@ -141,9 +172,21 @@ def scan(provider, profile, region, account_id, stale_after, output_fmt, report_
 
 @main.command()
 @click.option("--stale-after", default=90, type=int, show_default=True)
-@click.option("--output", "output_fmt", type=click.Choice(["terminal", "json", "html"]), default="terminal", show_default=True)
-@click.option("--report-path", default=None, help="Output file path for html/json reports.")
-@click.option("--severity", default=None, help="Comma list to filter findings, e.g. high,critical.")
+@click.option(
+    "--output",
+    "output_fmt",
+    type=click.Choice(["terminal", "json", "html"]),
+    default="terminal",
+    show_default=True,
+)
+@click.option(
+    "--report-path", default=None, help="Output file path for html/json reports."
+)
+@click.option(
+    "--severity",
+    default=None,
+    help="Comma list to filter findings, e.g. high,critical.",
+)
 def demo(stale_after, output_fmt, report_path, severity):
     """Run a full scan against built-in synthetic data — no AWS account needed.
 
@@ -189,12 +232,25 @@ def check(provider, profile, region, account_id):
 @click.option("--profile", default=None)
 @click.option("--region", default=None)
 @click.option("--account-id", default=None)
-@click.option("--type", "nhi_type", default=None, help="Filter by NHI type (e.g. iam_role, access_key).")
-@click.option("--output", "output_fmt", type=click.Choice(["terminal", "json"]), default="terminal", show_default=True)
+@click.option(
+    "--type",
+    "nhi_type",
+    default=None,
+    help="Filter by NHI type (e.g. iam_role, access_key).",
+)
+@click.option(
+    "--output",
+    "output_fmt",
+    type=click.Choice(["terminal", "json"]),
+    default="terminal",
+    show_default=True,
+)
 def inventory(provider, profile, region, account_id, nhi_type, output_fmt):
     """List what exists — no risk scoring."""
     try:
-        result = _run_scan(provider, profile, region, account_id, 90, False, output_fmt == "terminal")
+        result = _run_scan(
+            provider, profile, region, account_id, 90, False, output_fmt == "terminal"
+        )
     except CredentialsMissing as exc:
         _handle_credentials_error(exc)
 
@@ -215,7 +271,13 @@ def inventory(provider, profile, region, account_id, nhi_type, output_fmt):
 
 @main.command()
 @click.option("--input", "input_path", required=True, help="Saved JSON scan to render.")
-@click.option("--format", "fmt", type=click.Choice(["html", "json", "pdf"]), default="html", show_default=True)
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["html", "json", "pdf"]),
+    default="html",
+    show_default=True,
+)
 @click.option("--output", "output_path", default=None, help="Output file path.")
 def report(input_path, fmt, output_path):
     """Generate an audit-ready report from a saved JSON scan."""
@@ -247,8 +309,14 @@ def report(input_path, fmt, output_path):
 @click.option("--region", default=None)
 @click.option("--account-id", default=None)
 @click.option("--stale-after", default=90, type=int, show_default=True)
-@click.option("--name", default="default", help="Name for this saved configure profile.")
-@click.option("--show-policy", is_flag=True, help="Print the required read-only IAM policy and exit.")
+@click.option(
+    "--name", default="default", help="Name for this saved configure profile."
+)
+@click.option(
+    "--show-policy",
+    is_flag=True,
+    help="Print the required read-only IAM policy and exit.",
+)
 def configure(provider, profile, region, account_id, stale_after, name, show_policy):
     """Save provider config, or print the required IAM policy."""
     if show_policy:

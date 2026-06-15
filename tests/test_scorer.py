@@ -2,8 +2,6 @@
 
 from datetime import datetime, timedelta, timezone
 
-import pytest
-
 from credghost.engine.scorer import compute_blast_radius, score_nhi
 from credghost.models.nhi import NHIIdentity, NHIType, RiskLevel
 
@@ -52,7 +50,9 @@ def test_never_used_over_180_days_is_critical():
 def test_stale_beyond_threshold_is_high():
     nhi = make_nhi(last_used_at=_now() - timedelta(days=120))
     score_nhi(nhi, stale_threshold_days=90)
-    assert nhi.risk_level >= RiskLevel.HIGH if False else nhi.risk_level == RiskLevel.HIGH
+    assert (
+        nhi.risk_level >= RiskLevel.HIGH if False else nhi.risk_level == RiskLevel.HIGH
+    )
     assert any("Unused for" in r for r in nhi.risk_reasons)
 
 
@@ -95,7 +95,12 @@ def test_blast_radius_wildcard_is_critical():
 
 def test_blast_radius_many_risky_services_is_high():
     nhi = make_nhi(
-        granted_permissions=["iam:ListUsers", "s3:GetObject", "kms:Decrypt", "rds:DescribeDBInstances"]
+        granted_permissions=[
+            "iam:ListUsers",
+            "s3:GetObject",
+            "kms:Decrypt",
+            "rds:DescribeDBInstances",
+        ]
     )
     assert compute_blast_radius(nhi) == "high"
 

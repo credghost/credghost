@@ -10,7 +10,7 @@ from __future__ import annotations
 from jinja2 import Environment
 
 from credghost import __version__
-from credghost.models.nhi import RiskLevel, ScanResult
+from credghost.models.nhi import ScanResult
 
 _TEMPLATE = r"""<!DOCTYPE html>
 <html lang="en">

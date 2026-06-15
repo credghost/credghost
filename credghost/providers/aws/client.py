@@ -34,7 +34,9 @@ class CredentialsMissing(Exception):
     """Raised when no usable AWS credentials are found."""
 
 
-def build_session(profile: str | None = None, region: str | None = None) -> boto3.Session:
+def build_session(
+    profile: str | None = None, region: str | None = None
+) -> boto3.Session:
     """Build a boto3 session from existing credentials (env, ~/.aws, IAM role)."""
     try:
         if profile:
