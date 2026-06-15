@@ -94,9 +94,18 @@ class NHIIdentity:
 
     @property
     def is_over_privileged(self) -> bool:
-        return len(self.unused_permissions) > 0 and (
-            len(self.unused_permissions) > len(self.used_permissions) * 2
-        )
+        if not self.unused_permissions:
+            return False
+        if self.used_permissions:
+            # We observed usage: flag when granted access dwarfs what's used.
+            return len(self.unused_permissions) > len(self.used_permissions) * 2
+        # No observed usage (e.g. service-last-accessed unavailable). Only call
+        # it over-privileged when the grant is genuinely broad — a wildcard or
+        # several unused permissions — so a single narrowly-scoped permission we
+        # simply lack usage data for isn't a false positive.
+        if any(p == "*" or p.endswith(":*") for p in self.unused_permissions):
+            return True
+        return len(self.unused_permissions) >= 3
 
     @property
     def never_used(self) -> bool:
