@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# CredGhost local output / config
+*.html
+findings.json
+credghost-*.json
+credghost-*.html
+.credghost/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

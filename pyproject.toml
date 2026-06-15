@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "credghost"
+version = "0.1.0"
+description = "NHI and agent credential governance CLI — find every ghost key in your cloud"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+keywords = ["security", "iam", "nhi", "cloud-security", "audit", "governance"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "boto3>=1.34",
+    "python-dateutil>=2.8",
+    "jinja2>=3.1",
+]
+
+[project.scripts]
+credghost = "credghost.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "moto[iam]", "black", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["credghost*"]
+
+[tool.setuptools.package-data]
+"credghost.providers.aws" = ["iam-policy.json"]

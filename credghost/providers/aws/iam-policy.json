@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CredGhostReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GenerateCredentialReport",
+        "iam:GetCredentialReport",
+        "iam:ListUsers",
+        "iam:ListRoles",
+        "iam:ListGroups",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed",
+        "iam:ListAttachedUserPolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListUserPolicies",
+        "iam:ListRolePolicies",
+        "iam:ListUserTags",
+        "iam:ListRoleTags",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:GenerateServiceLastAccessedDetails",
+        "iam:GetServiceLastAccessedDetails",
+        "iam:ListServiceSpecificCredentials",
+        "access-analyzer:ListAnalyzers",
+        "access-analyzer:ListFindings",
+        "access-analyzer:ListFindingsV2",
+        "access-analyzer:GetFinding",
+        "cloudtrail:LookupEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
